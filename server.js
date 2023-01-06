@@ -33,8 +33,6 @@ const RoutesData = new State();
 const unsubRoutes = () =>
   db.collection("routes").onSnapshot((snapshots) => {
     snapshots.forEach(async (snapshot) => {
-      console.log(snapshot.data());
-
       RoutesData.setData(snapshot.data());
     });
   });
@@ -43,8 +41,6 @@ const UsersData = new State();
 const unsubUsers = () =>
   db.collection("users").onSnapshot((snapshots) => {
     snapshots.forEach(async (snapshot) => {
-      console.log(snapshot.data());
-
       UsersData.setData(snapshot.data());
     });
   });
@@ -53,8 +49,6 @@ const StationsData = new State();
 const unsubStations = () =>
   db.collection("stations").onSnapshot((snapshots) => {
     snapshots.forEach(async (snapshot) => {
-      console.log(snapshot.data());
-
       StationsData.setData(snapshot.data());
     });
   });
@@ -81,33 +75,44 @@ app.post("/api", (req, res) => {
     .then(async (userRecord) => {
       const userRef = db.doc(`/users/${userRecord.uid}`);
       const snapshot = await userRef.get();
-      if (!snapshot.exists()) {
+      if (!snapshot.exists) {
         const { displayName, email } = userRecord;
         const createdAt = new Date().toUTCString();
         const { password, ...addtionalData } = staff;
         try {
-          userRef.set({
-            displayName,
-            createdAt,
-            ...addtionalData,
-          });
+          userRef
+            .set({
+              displayName,
+              createdAt,
+              ...addtionalData,
+            })
+            .then(() => res.send(true));
         } catch (error) {
-          console.log("error creating user", error);
+          res.send("error creating user", error.message);
         }
       }
       // See the UserRecord reference doc for the contents of userRecord.
       console.log("Successfully created new user:", userRecord);
     })
     .catch((error) => {
-      console.log("Error creating new user:", error);
-      res.send(error);
+      res.send(error.message);
     });
 });
 app.get("/test", (res, req) => {});
 app.get("/routes", (req, res) => res.send(RoutesData.data));
 app.get("/stations", (req, res) => res.send(StationsData.data));
 app.get("/users", (req, res) => {
-  const uid = req.query.uid;
-  res.send(UsersData.data[uid]);
+  if (req.query.uid) {
+    const uid = req.query.uid;
+    res.send(UsersData.data[uid]);
+  }
+
+  if (req.query.role) {
+    const role = req.query.role;
+    const findUser = Object.keys(UsersData.data)
+      .map((key) => UsersData.data[key])
+      .filter((User) => User.role === role);
+    res.send(findUser);
+  }
 });
 app.listen(5000, () => console.log("Server running on port 5000"));
