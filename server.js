@@ -6,6 +6,7 @@ import admin from "firebase-admin";
 import bodyParser from "body-parser";
 import fs from "fs";
 import { formatWithOptions } from "util";
+import { debug } from "console";
 const fb = initializeApp({
   credential: admin.credential.cert("./serviceAccount.json"),
 });
@@ -23,8 +24,8 @@ app.use(bodyParser.json());
 class State {
   constructor() {
     this.data = {};
-    this.setData = (data) => {
-      this.data = { ...this.data, [data.id]: data };
+    this.setData = (item) => {
+      this.data = { ...this.data, [item.id]: item };
     };
   }
 }
@@ -37,6 +38,15 @@ const unsubRoutes = () =>
     });
   });
 unsubRoutes();
+const VehiclesData = new State();
+const unsubVehicles = () =>
+  db.collection("vehicles").onSnapshot((snapshots) => {
+    snapshots.forEach(async (snapshot) => {
+      const data = snapshot.data();
+      VehiclesData.setData(data);
+    });
+  });
+unsubVehicles();
 const UsersData = new State();
 const unsubUsers = () =>
   db.collection("users").onSnapshot((snapshots) => {
@@ -61,7 +71,6 @@ app.post("/states", (req, res) => {
 });
 app.post("/api", (req, res) => {
   const staff = req.body;
-  console.log(req.body);
   getAuth(fb)
     .createUser({
       uid: staff.id,
@@ -91,8 +100,6 @@ app.post("/api", (req, res) => {
           res.send("error creating user", error.message);
         }
       }
-      // See the UserRecord reference doc for the contents of userRecord.
-      console.log("Successfully created new user:", userRecord);
     })
     .catch((error) => {
       res.send(error.message);
@@ -112,7 +119,35 @@ app.get("/users", (req, res) => {
     const findUser = Object.keys(UsersData.data)
       .map((key) => UsersData.data[key])
       .filter((User) => User.role === role);
-    res.send(findUser);
+    const userObject = {};
+    findUser.map((user) => {
+      Object.assign(userObject, { [user.displayName]: user });
+    });
+    res.send(userObject);
   }
+});
+app.get("/vehicles", (req, res) => {
+  console.log(req.query);
+  if (req.query.type === "interState") {
+    const vehiclesSearch = Object.keys(VehiclesData.data)
+      .map((key) => VehiclesData.data[key])
+      .filter((vehicle) => vehicle.station === "");
+    const foundVehicles = {};
+    vehiclesSearch.map((vehicle) =>
+      Object.assign(foundVehicles, { [vehicle.id]: vehicle })
+    );
+    res.send(foundVehicles);
+  }
+  if (req.query.station) {
+    const vehiclesSearch = Object.keys(VehiclesData.data)
+      .map((key) => VehiclesData.data[key])
+      .filter((vehicle) => vehicle.station === req.query.station);
+    const foundVehicles = {};
+    vehiclesSearch.map((vehicle) =>
+      Object.assign(foundVehicles, { [vehicle.id]: vehicle })
+    );
+    res.send(foundVehicles);
+  }
+  // res.send(VehiclesData.data);
 });
 app.listen(5000, () => console.log("Server running on port 5000"));
