@@ -5,8 +5,7 @@ import { getAuth } from "firebase-admin/auth";
 import admin from "firebase-admin";
 import bodyParser from "body-parser";
 import fs from "fs";
-import { formatWithOptions } from "util";
-import { debug } from "console";
+
 const fb = initializeApp({
   credential: admin.credential.cert("./serviceAccount.json"),
 });
@@ -113,7 +112,6 @@ app.get("/users", (req, res) => {
     const uid = req.query.uid;
     res.send(UsersData.data[uid]);
   }
-
   if (req.query.role) {
     const role = req.query.role;
     const findUser = Object.keys(UsersData.data)
@@ -127,7 +125,6 @@ app.get("/users", (req, res) => {
   }
 });
 app.get("/vehicles", (req, res) => {
-  console.log(req.query);
   if (req.query.type === "interState") {
     const vehiclesSearch = Object.keys(VehiclesData.data)
       .map((key) => VehiclesData.data[key])
@@ -150,4 +147,5 @@ app.get("/vehicles", (req, res) => {
   }
   // res.send(VehiclesData.data);
 });
+
 app.listen(5000, () => console.log("Server running on port 5000"));
