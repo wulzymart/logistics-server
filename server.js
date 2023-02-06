@@ -85,7 +85,7 @@ app.post("/api", (req, res) => {
       const snapshot = await userRef.get();
       if (!snapshot.exists) {
         const { displayName, email } = userRecord;
-        const createdAt = new Date().toUTCString();
+        const createdAt = db.FieldValue.serverTimestamp();
         const { password, ...addtionalData } = staff;
         try {
           userRef
