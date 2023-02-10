@@ -1,13 +1,13 @@
-import Express from "express";
-
-import { initializeApp } from "firebase-admin/app";
-import { getAuth } from "firebase-admin/auth";
-import admin from "firebase-admin";
-import bodyParser from "body-parser";
-import fs from "fs";
+const Express = require("express");
+const { initializeApp } = require("firebase-admin/app");
+const { getAuth } = require("firebase-admin/auth");
+const admin = require("firebase-admin");
+const bodyParser = require("body-parser");
+const serviceAccount = require("./serviceAccount.json");
+const fs = require("fs");
 
 const fb = initializeApp({
-  credential: admin.credential.cert("./serviceAccount.json"),
+  credential: admin.credential.cert(serviceAccount),
 });
 
 const db = admin.firestore();
