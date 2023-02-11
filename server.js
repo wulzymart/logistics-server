@@ -14,6 +14,7 @@ const db = admin.firestore();
 const statesJson = fs.readFileSync("./AppBrain/states.json");
 const states = JSON.parse(statesJson);
 const getStates = (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
   res.send(states);
 };
 
@@ -104,10 +105,17 @@ app.post("/api", (req, res) => {
       res.send(error.message);
     });
 });
-app.get("/test", (res, req) => {});
-app.get("/routes", (req, res) => res.send(RoutesData.data));
-app.get("/stations", (req, res) => res.send(StationsData.data));
+
+app.get("/routes", (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
+  res.send(RoutesData.data);
+});
+app.get("/stations", (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
+  res.send(StationsData.data);
+});
 app.get("/users", (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
   if (req.query.uid) {
     const uid = req.query.uid;
     res.send(UsersData.data[uid]);
@@ -125,6 +133,7 @@ app.get("/users", (req, res) => {
   }
 });
 app.get("/vehicles", (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
   if (req.query.type === "interState") {
     const vehiclesSearch = Object.keys(VehiclesData.data)
       .map((key) => VehiclesData.data[key])
