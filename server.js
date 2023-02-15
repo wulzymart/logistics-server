@@ -5,6 +5,7 @@ const admin = require("firebase-admin");
 const bodyParser = require("body-parser");
 const serviceAccount = require("./serviceAccount.json");
 const fs = require("fs");
+const app = Express();
 const cors = require("cors");
 
 const fb = initializeApp({
@@ -12,10 +13,10 @@ const fb = initializeApp({
 });
 
 const db = admin.firestore();
-const app = Express();
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors);
+//app.use(cors);
 const statesJson = fs.readFileSync("./AppBrain/states.json");
 const states = JSON.parse(statesJson);
 const getStates = (req, res) => {
@@ -26,7 +27,7 @@ const pricingJson = fs.readFileSync("./AppBrain/pricing.json");
 const pricing = JSON.parse(pricingJson);
 const getPricing = (req, res) => {
   res.set("Access-Control-Allow-Origin", "*");
-  res.send(states);
+  res.send(pricing);
 };
 
 class State {
