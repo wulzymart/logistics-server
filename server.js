@@ -79,12 +79,18 @@ app.post("/states", (req, res) => {
   fs.writeFileSync("./AppBrain/states.json", statesJson);
 });
 app.post("/pricing", (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
+  res.set("Access-Control-Allow-Methods", "POST");
+  res.set("Access-Control-Allow-Headers", "Content-Type");
   const pricing = req.body;
   const pricingJson = JSON.stringify(pricing);
   fs.writeFileSync("./AppBrain/pricing.json", pricingJson);
 });
 app.get("/pricing", getPricing);
 app.post("/api", (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
+  res.set("Access-Control-Allow-Methods", "POST");
+  res.set("Access-Control-Allow-Headers", "Content-Type");
   const staff = req.body;
   getAuth(fb)
     .createUser({
