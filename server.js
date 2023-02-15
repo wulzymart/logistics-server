@@ -6,12 +6,16 @@ const bodyParser = require("body-parser");
 const serviceAccount = require("./serviceAccount.json");
 const fs = require("fs");
 const cors = require("cors");
-app.use(cors);
+
 const fb = initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
 const db = admin.firestore();
+const app = Express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(cors);
 const statesJson = fs.readFileSync("./AppBrain/states.json");
 const states = JSON.parse(statesJson);
 const getStates = (req, res) => {
@@ -24,9 +28,7 @@ const getPricing = (req, res) => {
   res.set("Access-Control-Allow-Origin", "*");
   res.send(states);
 };
-const app = Express();
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+
 class State {
   constructor() {
     this.data = {};
