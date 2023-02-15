@@ -5,7 +5,8 @@ const admin = require("firebase-admin");
 const bodyParser = require("body-parser");
 const serviceAccount = require("./serviceAccount.json");
 const fs = require("fs");
-
+const cors = require("cors");
+app.use(cors);
 const fb = initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
@@ -17,7 +18,12 @@ const getStates = (req, res) => {
   res.set("Access-Control-Allow-Origin", "*");
   res.send(states);
 };
-
+const pricingJson = fs.readFileSync("./AppBrain/pricing.json");
+const pricing = JSON.parse(pricingJson);
+const getPricing = (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
+  res.send(states);
+};
 const app = Express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -69,6 +75,12 @@ app.post("/states", (req, res) => {
   const statesJson = JSON.stringify(states);
   fs.writeFileSync("./AppBrain/states.json", statesJson);
 });
+app.post("/pricing", (req, res) => {
+  const pricing = req.body;
+  const pricingJson = JSON.stringify(pricing);
+  fs.writeFileSync("./AppBrain/pricing.json", pricingJson);
+});
+app.get("/pricing", getPricing);
 app.post("/api", (req, res) => {
   const staff = req.body;
   getAuth(fb)
