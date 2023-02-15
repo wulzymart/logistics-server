@@ -16,7 +16,12 @@ const db = admin.firestore();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-//app.use(cors);
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST"],
+  })
+);
 const statesJson = fs.readFileSync("./AppBrain/states.json");
 const states = JSON.parse(statesJson);
 const getStates = (req, res) => {
