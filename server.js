@@ -93,10 +93,7 @@ app.post("/pricing", (req, res) => {
 });
 app.get("/pricing", getPricing);
 app.post("/api", (req, res) => {
-  res.set("Access-Control-Allow-Origin", "*");
-  res.set("Access-Control-Allow-Methods", "POST");
-  res.set("Access-Control-Allow-Headers", "Content-Type");
-  const staff = req.body;
+  const { staff } = req.body;
   getAuth(fb)
     .createUser({
       uid: staff.id,
@@ -105,13 +102,13 @@ app.post("/api", (req, res) => {
       password: staff.password,
       emailVerified: true,
       disabled: false,
-      displayName: staff.firstName + " " + staff.lastName,
+      displayName: `${staff.firstName} ${staff.lastName}`,
     })
     .then(async (userRecord) => {
       const userRef = db.doc(`/users/${userRecord.uid}`);
       const snapshot = await userRef.get();
       if (!snapshot.exists) {
-        const { displayName, email } = userRecord;
+        const { displayName } = userRecord;
         const createdAt = admin.firestore.FieldValue.serverTimestamp();
         const { password, ...addtionalData } = staff;
         try {
