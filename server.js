@@ -22,15 +22,17 @@ app.use(
     methods: ["GET", "POST"],
   })
 );
-const statesJson = fs.readFileSync("./AppBrain/states.json");
-const states = JSON.parse(statesJson);
+
 const getStates = (req, res) => {
+  const statesJson = fs.readFileSync("./AppBrain/states.json");
+  const states = JSON.parse(statesJson);
   res.set("Access-Control-Allow-Origin", "*");
   res.send(states);
 };
-const pricingJson = fs.readFileSync("./AppBrain/pricing.json");
-const pricing = JSON.parse(pricingJson);
+
 const getPricing = (req, res) => {
+  const pricingJson = fs.readFileSync("./AppBrain/pricing.json");
+  const pricing = JSON.parse(pricingJson);
   res.set("Access-Control-Allow-Origin", "*");
   res.send(pricing);
 };
