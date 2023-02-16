@@ -81,15 +81,17 @@ app.get("/states", getStates);
 app.post("/states", (req, res) => {
   const states = req.body;
   const statesJson = JSON.stringify(states);
+
   fs.writeFileSync("./AppBrain/states.json", statesJson);
 });
 app.post("/pricing", (req, res) => {
   res.set("Access-Control-Allow-Origin", "*");
   res.set("Access-Control-Allow-Methods", "POST");
   res.set("Access-Control-Allow-Headers", "Content-Type");
-  const pricing = req.body;
-  const pricingJson = JSON.stringify(pricing);
+  const { pricing_ } = req.body;
+  const pricingJson = JSON.stringify(pricing_);
   fs.writeFileSync("./AppBrain/pricing.json", pricingJson);
+  res.send(true);
 });
 app.get("/pricing", getPricing);
 app.post("/api", (req, res) => {
@@ -180,4 +182,6 @@ app.get("/vehicles", (req, res) => {
   // res.send(VehiclesData.data);
 });
 
-app.listen(5000, () => console.log("Server running on port 5000"));
+app.listen(process.env.PORT || 5000, () =>
+  console.log("Server running on port 5000")
+);
