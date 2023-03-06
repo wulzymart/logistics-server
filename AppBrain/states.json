@@ -718,8 +718,8 @@
         "address": {
           "state": "Kogi",
           "lga": "Okene",
-          "stretAddress": "km 57, Agasa junction opposite Dr. Ado Ibrahim Building Agasa",
-          "shortCode": "HQ"
+          "streetAddress": "km 57, Agasa junction opposite Dr. Ado Ibrahim Building Agasa",
+          "shortCode": "HOF"
         }
       },
       "Okene 1": {
@@ -730,8 +730,8 @@
         "address": {
           "state": "Kogi",
           "lga": "Okene",
-          "stretAddress": "Muhaibro plaza, Lagos bypass behind water works road, iruvucheba",
-          "shortCode": "OK1"
+          "streetAddress": "Muhaibro plaza, Lagos bypass behind water works road, iruvucheba",
+          "shortCode": "OKN"
         }
       }
     }
@@ -996,7 +996,7 @@
         "address": {
           "state": "Oyo",
           "lga": "Ibadan North-East",
-          "stretAddress": "Shop No 26, Hope junction Plaza Old Ife Rd",
+          "streetAddress": "Shop No 26, Hope junction Plaza Old Ife Rd",
           "shortCode": "IB1"
         }
       }

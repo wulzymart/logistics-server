@@ -45,7 +45,17 @@ class State {
     };
   }
 }
-
+const ReviewsData = new State();
+const unsubReviews = () =>
+  db
+    .collection("reviews")
+    .where("reaction", "==", "approved")
+    .onSnapshot((snapshots) => {
+      snapshots.forEach(async (snapshot) => {
+        ReviewsData.setData(snapshot.data());
+      });
+    });
+unsubReviews();
 const RoutesData = new State();
 const unsubRoutes = () =>
   db.collection("routes").onSnapshot((snapshots) => {
@@ -96,6 +106,25 @@ app.post("/pricing", (req, res) => {
   res.send(true);
 });
 app.get("/pricing", getPricing);
+app.post("/ecommerce-user", (req, res) => {
+  const { customer } = req.body;
+  getAuth(fb)
+    .createUser({
+      uid: customer.id,
+      email: customer.email,
+      phoneNumber: customer.phoneNumber,
+      password: "customer123",
+      emailVerified: true,
+      disabled: false,
+      displayName: `${customer.firstName} ${customer.lastName}`,
+    })
+    .then(() => {
+      res.send(true);
+    })
+    .catch((err) => {
+      err && res.send(err);
+    });
+});
 app.post("/api", (req, res) => {
   const { staff } = req.body;
   getAuth(fb)
@@ -140,6 +169,10 @@ app.get("/routes", (req, res) => {
 app.get("/stations", (req, res) => {
   res.set("Access-Control-Allow-Origin", "*");
   res.send(StationsData.data);
+});
+app.get("/reviews", (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
+  res.send(ReviewsData.data);
 });
 app.get("/users", (req, res) => {
   res.set("Access-Control-Allow-Origin", "*");
